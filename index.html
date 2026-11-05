@@ -1,0 +1,698 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Salary & Form 16 Tax Calculation - FY 2026-27</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @media print {
+            @page {
+                size: A4 portrait;
+                margin: 2mm;
+            }
+            body { 
+                font-size: 5px; 
+                background: white;
+                margin: 0;
+                padding: 0;
+                -webkit-print-color-adjust: exact;
+            }
+            .no-print { display: none !important; }
+            .print-container {
+                width: 100% !important;
+                max-width: 100% !important;
+                padding: 0 !important;
+                margin: 0 !important;
+                box-shadow: none !important;
+                transform: scale(0.96);
+                transform-origin: top left;
+            }
+            table { font-size: 5px; width: 100%; border-collapse: collapse; }
+            th, td { border: 1px solid #334155 !important; padding: 0.2px !important; text-align: center; }
+            input, select { border: none !important; background: transparent !important; text-align: center; font-size: 5px; padding: 0; }
+        }
+        table input, table select {
+            width: 100%;
+            background: transparent;
+            text-align: center;
+            border: 1px solid transparent;
+            outline: none;
+        }
+        table input:focus, table select:focus {
+            background-color: #eff6ff;
+            border-color: #3b82f6;
+        }
+    </style>
+</head>
+<body class="bg-slate-100 text-slate-900 p-0.5">
+
+    <div class="print-container max-w-[1200px] mx-auto bg-white shadow-lg rounded p-1 my-0">
+        
+        <!-- Header Info -->
+        <div class="text-center border-b-2 border-blue-900 pb-0.2 mb-0.5">
+            <h2 class="text-[9.5px] font-bold text-slate-800 uppercase">Details Of Salary And Deductions for the F.Y of 2026-27 A.Y 2027-28</h2>
+        </div>
+
+        <!-- Employee Info Metadata Fields -->
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-0.5 mb-0.5 bg-slate-50 p-0.5 rounded border border-slate-200 text-xs">
+            <div>
+                <label class="block font-bold text-slate-600 uppercase text-[7.5px]">Name:</label>
+                <input type="text" id="empName" placeholder="Enter Name" class="w-full border rounded p-0.1 bg-white font-medium text-[8.5px]">
+            </div>
+            <div>
+                <label class="block font-bold text-slate-600 uppercase text-[7.5px]">Designation:</label>
+                <input type="text" id="designation" placeholder="Enter Designation" class="w-full border rounded p-0.1 bg-white font-medium text-[8.5px]">
+            </div>
+            <div>
+                <label class="block font-bold text-slate-600 uppercase text-[7.5px]">KGID No:</label>
+                <input type="text" id="kgidNo" placeholder="Enter KGID" class="w-full border rounded p-0.1 bg-white font-medium text-[8.5px]">
+            </div>
+            <div>
+                <label class="block font-bold text-slate-600 uppercase text-[7.5px]">PAN No:</label>
+                <input type="text" id="panNo" placeholder="Enter PAN" class="w-full border rounded p-0.1 bg-white font-medium text-[8.5px]">
+            </div>
+            <div>
+                <label class="block font-bold text-slate-600 uppercase text-[7.5px]">School:</label>
+                <input type="text" id="schoolName" placeholder="Enter School Name" class="w-full border rounded p-0.1 bg-white font-medium text-[8.5px]">
+            </div>
+            <div>
+                <label class="block font-bold text-slate-600 uppercase text-[7.5px]">TAN:</label>
+                <input type="text" id="tanNo" placeholder="Enter TAN" class="w-full border rounded p-0.1 bg-white font-medium text-[8.5px]">
+            </div>
+            <div>
+                <label class="block font-bold text-slate-600 uppercase text-[7.5px]">Other Income (FD/RD):</label>
+                <input type="number" id="otherIncome" value="0" oninput="calculateAll()" class="w-full border rounded p-0.1 bg-white font-medium text-[8.5px]">
+            </div>
+        </div>
+
+        <!-- Quick Data Entry Panel (No-Print) -->
+        <div class="bg-blue-50 border border-blue-200 rounded p-1 mb-1 no-print text-xs">
+            <h3 class="font-bold text-blue-900 mb-0.5 uppercase text-[9px]">Quick Data Entry Panel</h3>
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-1">
+                <div>
+                    <label class="block font-bold text-slate-700 text-[8.5px]">Select Month / Period:</label>
+                    <select id="entryMonth" class="w-full border rounded p-0.2 bg-white font-medium text-[9.5px]">
+                        <option value="Mar">Mar</option>
+                        <option value="Apr">Apr</option>
+                        <option value="May">May</option>
+                        <option value="Jun">Jun</option>
+                        <option value="Jul">Jul</option>
+                        <option value="Aug">Aug</option>
+                        <option value="Sep">Sep</option>
+                        <option value="Oct">Oct</option>
+                        <option value="Nov">Nov</option>
+                        <option value="Dec">Dec</option>
+                        <option value="Jan">Jan</option>
+                        <option value="Feb">Feb</option>
+                        <option value="El">El</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block font-bold text-slate-700 text-[8.5px]">Select Column:</label>
+                    <select id="entryColumn" class="w-full border rounded p-0.2 bg-white font-medium text-[9.5px]">
+                        <option value="pay">pay (Basic)</option>
+                        <option value="ppsfn">PPSFN</option>
+                        <option value="others">others</option>
+                        <option value="it_tax">IT TAX</option>
+                        <option value="lic">L I C</option>
+                        <option value="kgid">KGID</option>
+                        <option value="gpf">GPF</option>
+                        <option value="nps">NPS</option>
+                        <option value="gpf_loan">GPF LOAN</option>
+                        <option value="kgid_loan">KGID LOAN</option>
+                        <option value="fa">FA (Festival Advance)</option>
+                        <option value="local_rec">LOCAL RECOVERIES</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block font-bold text-slate-700 text-[8.5px]">Enter Amount (₹):</label>
+                    <input type="number" id="entryAmount" placeholder="Enter amount" class="w-full border rounded p-0.2 bg-white font-medium text-[9.5px]">
+                </div>
+                <div class="flex items-end gap-1">
+                    <button onclick="applyQuickEntry()" class="w-2/3 bg-blue-700 hover:bg-blue-800 text-white font-bold py-0.5 px-1 rounded shadow text-[9.5px]">
+                        Add / Update
+                    </button>
+                    <button onclick="clearAllData()" class="w-1/3 bg-red-600 hover:bg-red-700 text-white font-bold py-0.5 px-1 rounded shadow text-[9.5px]">
+                        Clear
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Monthly Salary & Deduction Table -->
+        <div class="overflow-x-auto mb-1">
+            <table id="salaryTable" class="min-w-full border border-slate-300 text-[7.5px]">
+                <thead>
+                    <tr class="bg-blue-900 text-white">
+                        <th class="border p-0.1">Period</th>
+                        <th class="border p-0.1">pay</th>
+                        <th class="border p-0.1">D A</th>
+                        <th class="border p-0.1">HRA</th>
+                        <th class="border p-0.1">PPSFN</th>
+                        <th class="border p-0.1">OTHERS</th>
+                        <th class="border p-0.1 bg-blue-800">TOTAL</th>
+                        <th class="border p-0.1">IT TAX</th>
+                        <th class="border p-0.1">GIS</th>
+                        <th class="border p-0.1">PT</th>
+                        <th class="border p-0.1">L I C</th>
+                        <th class="border p-0.1">KGID</th>
+                        <th class="border p-0.1">GPF</th>
+                        <th class="border p-0.1">KASS</th>
+                        <th class="border p-0.1">NPS</th>
+                        <th class="border p-0.1">GPF LOAN</th>
+                        <th class="border p-0.1">KGID LOAN</th>
+                        <th class="border p-0.1">FA</th>
+                        <th class="border p-0.1">LOCAL RECOVERIES</th>
+                        <th class="border p-0.1 bg-red-900">TOTAL DED</th>
+                        <th class="border p-0.1 bg-emerald-900">NET SAL</th>
+                    </tr>
+                </thead>
+                <tbody id="tableBody">
+                    <!-- Populated dynamically -->
+                </tbody>
+                <tfoot>
+                    <tr id="totalRow" class="bg-slate-200 font-bold">
+                        <td class="border p-0.1 text-center">TOT</td>
+                        <td class="border p-0.1"><input type="text" id="tot_pay" readonly></td>
+                        <td class="border p-0.1"><input type="text" id="tot_da" readonly></td>
+                        <td class="border p-0.1"><input type="text" id="tot_hra" readonly></td>
+                        <td class="border p-0.1"><input type="text" id="tot_ppsfn" readonly></td>
+                        <td class="border p-0.1"><input type="text" id="tot_others" readonly></td>
+                        <td class="border p-0.1"><input type="text" id="tot_total" readonly></td>
+                        <td class="border p-0.1"><input type="text" id="tot_it" readonly></td>
+                        <td class="border p-0.1"><input type="text" id="tot_gis" readonly></td>
+                        <td class="border p-0.1"><input type="text" id="tot_pt" readonly></td>
+                        <td class="border p-0.1"><input type="text" id="tot_lic" readonly></td>
+                        <td class="border p-0.1"><input type="text" id="tot_kgid" readonly></td>
+                        <td class="border p-0.1"><input type="text" id="tot_gpf" readonly></td>
+                        <td class="border p-0.1"><input type="text" id="tot_kass" readonly></td>
+                        <td class="border p-0.1"><input type="text" id="tot_nps" readonly></td>
+                        <td class="border p-0.1"><input type="text" id="tot_gpf_loan" readonly></td>
+                        <td class="border p-0.1"><input type="text" id="tot_kgid_loan" readonly></td>
+                        <td class="border p-0.1"><input type="text" id="tot_fa" readonly></td>
+                        <td class="border p-0.1"><input type="text" id="tot_local" readonly></td>
+                        <td class="border p-0.1"><input type="text" id="tot_ded" readonly></td>
+                        <td class="border p-0.1"><input type="text" id="tot_net" readonly></td>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+
+        <!-- FORM NO 16 & Tax Calculation Section -->
+        <div class="bg-slate-50 border border-slate-300 rounded p-1 text-[8.5px]">
+            <h3 class="font-bold text-[9px] mb-0.2 text-blue-900 border-b pb-0.1 uppercase">FORM NO 16</h3>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-1 font-bold bg-blue-100 p-0.1 rounded mb-0.2 text-[8.5px]">
+                <div>PARTICULARS</div>
+                <div class="text-center">OLD REGIME</div>
+                <div class="text-center">NEW REGIME</div>
+            </div>
+
+            <div class="space-y-0.1 text-[8.5px]">
+                <!-- 1 -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-1 border-b py-0.1">
+                    <div>1. Gross Total Salary:</div>
+                    <div class="text-center font-bold" id="f16_gross_old">₹ 0</div>
+                    <div class="text-center font-bold" id="f16_gross_new">₹ 0</div>
+                </div>
+                <!-- 2 -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-1 border-b py-0.1 items-center">
+                    <div>2. Other Income From FD Interest Rd Interest etc,.</div>
+                    <div class="text-center"><input type="number" id="f16_other_old" value="0" oninput="calculateAll()" class="border rounded p-0.1 bg-white w-14 text-[8.5px]"></div>
+                    <div class="text-center"><input type="number" id="f16_other_new" value="0" oninput="calculateAll()" class="border rounded p-0.1 bg-white w-14 text-[8.5px]"></div>
+                </div>
+                <!-- 3 -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-1 border-b py-0.1">
+                    <div>3. Standard Deduction U/S 16 (Rs 50000/- in Old Regime Rs 75000 in New Regime)</div>
+                    <div class="text-center">₹ 50000</div>
+                    <div class="text-center">₹ 75000</div>
+                </div>
+                <!-- 4 -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-1 border-b py-0.1">
+                    <div>4. Deduction HRA U/S 10 (13A) (Actual Hra Received)</div>
+                    <div class="text-center font-semibold text-blue-800" id="f16_hra_ded">₹ 0</div>
+                    <div class="text-center">₹ 0</div>
+                </div>
+                <!-- 5 -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-1 border-b py-0.1">
+                    <div>5. Deduction Profession Tax U/S 16(iii)</div>
+                    <div class="text-center" id="f16_pt_old">₹ 0</div>
+                    <div class="text-center">₹ 0</div>
+                </div>
+                <!-- 6 -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-1 border-b py-0.1 items-center">
+                    <div>6. House Property Interest Payable On borrowed Capital U/S 24 up to 2,00,000</div>
+                    <div class="text-center"><input type="number" id="f16_hp_interest" value="0" oninput="calculateAll()" class="border rounded p-0.1 bg-white w-14 text-[8.5px]"></div>
+                    <div class="text-center">N/A</div>
+                </div>
+                <!-- 7 -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-1 border-b py-0.1 font-bold bg-amber-50">
+                    <div>7. Income Chargeable Under Head Salaries (1+2-3-4-5-6)</div>
+                    <div class="text-center" id="f16_chargeable_old">₹ 0</div>
+                    <div class="text-center" id="f16_chargeable_new">₹ 0</div>
+                </div>
+                <!-- 8 -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-1 border-b py-0.1">
+                    <div>8. U/S 8CCD(1)(2) NPS Contribution</div>
+                    <div class="text-center" id="f16_nps_old">₹ 0</div>
+                    <div class="text-center" id="f16_nps_new">₹ 0</div>
+                </div>
+                <!-- 9 -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-1 border-b py-0.1 items-center">
+                    <div>9. U/S 80U Person with disability (Select Yes for ₹75,000 deduction)</div>
+                    <div class="text-center">
+                        <select id="f16_disability_select" onchange="calculateAll()" class="border rounded p-0.1 bg-white text-[8.5px]">
+                            <option value="no">No (₹0)</option>
+                            <option value="yes">Yes (₹75,000)</option>
+                        </select>
+                    </div>
+                    <div class="text-center">N/A</div>
+                </div>
+                <!-- 10 -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-1 border-b py-0.1 items-center">
+                    <div>10. U/S 80E Interest on Loan taken for Higher Education</div>
+                    <div class="text-center"><input type="number" id="f16_edu_loan" value="0" oninput="calculateAll()" class="border rounded p-0.1 bg-white w-14 text-[8.5px]"></div>
+                    <div class="text-center">N/A</div>
+                </div>
+                <!-- 11 -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-1 border-b py-0.1 items-center">
+                    <div>11. U/S 80G Donation</div>
+                    <div class="text-center"><input type="number" id="f16_donation" value="0" oninput="calculateAll()" class="border rounded p-0.1 bg-white w-14 text-[8.5px]"></div>
+                    <div class="text-center">N/A</div>
+                </div>
+                <!-- 12 -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-1 border-b py-0.1">
+                    <div>12. Deduction U/S 80C (PPSFN + GIS + LIC + KGID + GPF capped @ 1,50,000)</div>
+                    <div class="text-center" id="f16_80c">₹ 0</div>
+                    <div class="text-center">N/A</div>
+                </div>
+                <!-- 13 -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-1 border-b py-0.1 items-center">
+                    <div>13. U/S 80D Health insurance (Old regime only)</div>
+                    <div class="text-center"><input type="number" id="f16_health_ins" value="0" oninput="calculateAll()" class="border rounded p-0.1 bg-white w-14 text-[8.5px]"></div>
+                    <div class="text-center">N/A</div>
+                </div>
+
+                <!-- TAX CALCULATION -->
+                <div class="font-bold bg-blue-900 text-white p-0.1 rounded mt-0.5 uppercase text-center text-[8.5px]">TAX CALCULATION</div>
+
+                <!-- 14 -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-1 border-b py-0.1 font-bold bg-amber-100">
+                    <div>14. TOTAL TAXABLE INCOME After Deductions</div>
+                    <div class="text-center" id="f16_taxable_old">₹ 0</div>
+                    <div class="text-center" id="f16_taxable_new">₹ 0</div>
+                </div>
+                <!-- 15 -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-1 border-b py-0.1">
+                    <div>15. Total Tax Payable</div>
+                    <div class="text-center text-blue-700 font-bold" id="f16_tax_old">₹ 0</div>
+                    <div class="text-center text-emerald-700 font-bold" id="f16_tax_new">₹ 0</div>
+                </div>
+                <!-- 16 -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-1 border-b py-0.1">
+                    <div>16. Tax Rebate u/s 87A (Rs. 12,500 in old Regime and Rs. 60,000 in New Regime)</div>
+                    <div class="text-center" id="f16_rebate_old">₹ 0</div>
+                    <div class="text-center" id="f16_rebate_new">₹ 0</div>
+                </div>
+                <!-- 17 -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-1 border-b py-0.1 items-center">
+                    <div>17. Tax After Marginal Relief</div>
+                    <div class="text-center"><input type="number" id="f16_marginal_relief" value="0" oninput="calculateAll()" class="border rounded p-0.1 bg-white w-14 text-[8.5px]"></div>
+                    <div class="text-center">₹ 0</div>
+                </div>
+                <!-- Cess -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-1 border-b py-0.1">
+                    <div>Edn Cess + Health Cess @ 4%</div>
+                    <div class="text-center" id="f16_cess_old">₹ 0</div>
+                    <div class="text-center" id="f16_cess_new">₹ 0</div>
+                </div>
+                <!-- Net Tax Payable -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-1 border-b py-0.1 font-bold">
+                    <div>Net Tax Payable</div>
+                    <div class="text-center text-blue-800" id="f16_net_tax_old">₹ 0</div>
+                    <div class="text-center text-emerald-800" id="f16_net_tax_new">₹ 0</div>
+                </div>
+                <!-- Advance Tax Paid -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-1 border-b py-0.1">
+                    <div>Advance / IT Tax Paid (Auto from IT Tax Column)</div>
+                    <div class="text-center font-bold text-slate-800" id="f16_adv_old">₹ 0</div>
+                    <div class="text-center font-bold text-slate-800" id="f16_adv_new">₹ 0</div>
+                </div>
+                <!-- Tax Remaining to be Paid -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-1 py-0.2 font-bold bg-slate-200 text-[9px]">
+                    <div>Tax Remaining to be Paid</div>
+                    <div class="text-center" id="f16_rem_old">₹ 0</div>
+                    <div class="text-center" id="f16_rem_new">₹ 0</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Signature Section -->
+        <div class="grid grid-cols-2 gap-4 mt-1 pt-0.5 border-t text-[8.5px] font-bold">
+            <div class="text-left">
+                <p>Place: ............................................</p>
+                <p>Date: ............................................</p>
+            </div>
+            <div class="text-right flex flex-col justify-end items-end">
+                <div class="border-t border-slate-600 w-36 pt-0.1 text-center">Sign of Employee</div>
+            </div>
+        </div>
+
+        <!-- Print Action Buttons (Hidden on Print) -->
+        <div class="mt-1 flex justify-between items-center no-print">
+            <button onclick="window.print()" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-1 px-3 rounded shadow text-xs">
+                Print A4 Portrait (1 Page) / Save PDF
+            </button>
+            <button onclick="calculateAll()" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-1 px-3 rounded shadow text-xs">
+                Recalculate Totals
+            </button>
+        </div>
+
+        <!-- Screen-Only Footer in Bold (Hidden on Print) -->
+        <div class="mt-1 pt-0.5 border-t text-center text-[9.5px] font-bold text-slate-800 no-print">
+            designed by LAKSHMIKANTH R (Mob :9844444871) suported by: VENKATARAMANAIAH PRESIDENT KSTPA C N HALLI
+        </div>
+    </div>
+
+    <script>
+        const periods = ["Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec", "Jan", "Feb", "El"];
+        const da15Months = ["Mar", "Apr", "May", "Jun"]; // Mar-Jun 15.75%, Jul-Feb & El 18%
+
+        function initTable() {
+            const tbody = document.getElementById('tableBody');
+            tbody.innerHTML = "";
+            periods.forEach((p) => {
+                let defaultPT = (p !== 'El') ? 200 : 0;
+                let row = `
+                    <tr class="hover:bg-slate-50" data-period="${p}">
+                        <td class="border p-0.1 font-bold bg-slate-100">${p}</td>
+                        <td class="border p-0.1"><input type="number" class="pay" value="0" oninput="calculateAll()"></td>
+                        <td class="border p-0.1"><input type="number" class="da" value="0" readonly class="bg-slate-100"></td>
+                        <td class="border p-0.1"><input type="number" class="hra" value="0" readonly class="bg-slate-100"></td>
+                        <td class="border p-0.1"><input type="number" class="ppsfn" value="0" oninput="calculateAll()"></td>
+                        <td class="border p-0.1"><input type="number" class="others" value="0" oninput="calculateAll()"></td>
+                        <td class="border p-0.1 font-bold bg-blue-50"><input type="number" class="total_sal" value="0" readonly></td>
+                        <td class="border p-0.1"><input type="number" class="it_tax" value="0" oninput="calculateAll()"></td>
+                        <td class="border p-0.1"><input type="number" class="gis" value="480" readonly class="bg-slate-100 font-semibold"></td>
+                        <td class="border p-0.1"><input type="number" class="pt" value="${defaultPT}" oninput="calculateAll()"></td>
+                        <td class="border p-0.1"><input type="number" class="lic" value="0" oninput="calculateAll()"></td>
+                        <td class="border p-0.1"><input type="number" class="kgid" value="0" oninput="calculateAll()"></td>
+                        <td class="border p-0.1"><input type="number" class="gpf" value="0" oninput="calculateAll()"></td>
+                        <td class="border p-0.1"><input type="number" class="kass" value="350" readonly class="bg-slate-100 font-semibold"></td>
+                        <td class="border p-0.1"><input type="number" class="nps" value="0" oninput="calculateAll()"></td>
+                        <td class="border p-0.1"><input type="number" class="gpf_loan" value="0" oninput="calculateAll()"></td>
+                        <td class="border p-0.1"><input type="number" class="kgid_loan" value="0" oninput="calculateAll()"></td>
+                        <td class="border p-0.1"><input type="number" class="fa" value="0" oninput="calculateAll()"></td>
+                        <td class="border p-0.1"><input type="number" class="local_rec" value="0" oninput="calculateAll()"></td>
+                        <td class="border p-0.1 font-bold bg-red-50"><input type="number" class="total_ded" value="0" readonly></td>
+                        <td class="border p-0.1 font-bold bg-emerald-50"><input type="number" class="net_sal" value="0" readonly></td>
+                    </tr>
+                `;
+                tbody.insertAdjacentHTML('beforeend', row);
+            });
+            calculateAll();
+        }
+
+        function applyQuickEntry() {
+            const selectedMonth = document.getElementById('entryMonth').value;
+            const column = document.getElementById('entryColumn').value;
+            const amount = parseFloat(document.getElementById('entryAmount').value) || 0;
+
+            if (column === 'fa') {
+                distributeFa(selectedMonth, amount);
+                return;
+            }
+
+            const rows = document.querySelectorAll('#tableBody tr');
+            let startUpdating = false;
+
+            rows.forEach(r => {
+                const p = r.getAttribute('data-period');
+                if (p === selectedMonth) {
+                    startUpdating = true;
+                }
+                if (startUpdating) {
+                    r.querySelector(`.${column}`).value = amount;
+                }
+            });
+
+            calculateAll();
+            document.getElementById('entryAmount').value = '';
+        }
+
+        function clearAllData() {
+            if (confirm("Are you sure you want to clear all salary and deduction entries?")) {
+                const inputs = document.querySelectorAll('#tableBody input[type="number"]');
+                inputs.forEach(input => {
+                    if (!input.classList.contains('bg-slate-100')) { // keep read-only auto fields if needed, or clear all editable
+                        input.value = 0;
+                    }
+                });
+                document.getElementById('empName').value = '';
+                document.getElementById('designation').value = '';
+                document.getElementById('kgidNo').value = '';
+                document.getElementById('panNo').value = '';
+                document.getElementById('schoolName').value = '';
+                document.getElementById('tanNo').value = '';
+                document.getElementById('otherIncome').value = 0;
+                document.getElementById('f16_other_old').value = 0;
+                document.getElementById('f16_other_new').value = 0;
+                document.getElementById('f16_hp_interest').value = 0;
+                document.getElementById('f16_edu_loan').value = 0;
+                document.getElementById('f16_donation').value = 0;
+                document.getElementById('f16_health_ins').value = 0;
+                document.getElementById('f16_marginal_relief').value = 0;
+                calculateAll();
+            }
+        }
+
+        function distributeFa(startMonth, totalOrMonthlyAmount) {
+            const monthsOrder = ["Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec", "Jan", "Feb", "El"];
+            const startIndex = monthsOrder.indexOf(startMonth);
+            if (startIndex === -1) return;
+
+            const rows = document.querySelectorAll('#tableBody tr');
+            rows.forEach(r => {
+                const faInput = r.querySelector('.fa');
+                if (faInput) faInput.value = 0;
+            });
+
+            let monthlyInstallment = totalOrMonthlyAmount > 5000 ? Math.round(totalOrMonthlyAmount / 10) : totalOrMonthlyAmount;
+
+            for (let i = 0; i < 10; i++) {
+                let targetMonthIndex = (startIndex + i) % 13;
+                let mName = monthsOrder[targetMonthIndex];
+                
+                rows.forEach(r => {
+                    if (r.getAttribute('data-period') === mName) {
+                        r.querySelector('.fa').value = monthlyInstallment;
+                    }
+                });
+            }
+            calculateAll();
+            document.getElementById('entryAmount').value = '';
+        }
+
+        function calculateAll() {
+            const rows = document.querySelectorAll('#tableBody tr');
+            
+            let t_pay = 0, t_da = 0, t_hra = 0, t_ppsfn = 0, t_others = 0, t_total = 0;
+            let t_it = 0, t_gis = 0, t_pt = 0, t_lic = 0, t_kgid = 0, t_gpf = 0, t_kass = 0, t_nps = 0;
+            let t_gpf_l = 0, t_kgid_l = 0, t_fa = 0, t_local = 0, t_ded = 0, t_net = 0;
+
+            let sum80c = 0;
+
+            rows.forEach(row => {
+                const period = row.getAttribute('data-period');
+                const pay = parseFloat(row.querySelector('.pay').value) || 0;
+                const ppsfn = parseFloat(row.querySelector('.ppsfn').value) || 0;
+                const others = parseFloat(row.querySelector('.others').value) || 0;
+
+                // Automatic DA Calculation (Mar-Jun: 15.75%, Jul-Feb & El: 18%)
+                let daRate = da15Months.includes(period) ? 0.1575 : 0.18;
+                const da = Math.round(pay * daRate);
+                row.querySelector('.da').value = da;
+
+                // Automatic HRA Calculation (7.5%)
+                const hra = Math.round(pay * 0.075);
+                row.querySelector('.hra').value = hra;
+
+                // GIS Fixed at 480
+                const gis = 480;
+                row.querySelector('.gis').value = gis;
+
+                // KASS Fixed at 350
+                const kass = 350;
+                row.querySelector('.kass').value = kass;
+
+                // PPSFN & PT Rule: If PPSFN is entered (>0), PT becomes 0
+                const ptInput = row.querySelector('.pt');
+                if (ppsfn > 0) {
+                    ptInput.value = 0;
+                } else if (ptInput.value == 0 && period !== 'El' && ppsfn === 0) {
+                    ptInput.value = 200;
+                }
+                const pt = parseFloat(ptInput.value) || 0;
+
+                const it_tax = parseFloat(row.querySelector('.it_tax').value) || 0;
+                const lic = parseFloat(row.querySelector('.lic').value) || 0;
+                const kgid = parseFloat(row.querySelector('.kgid').value) || 0;
+                const gpf = parseFloat(row.querySelector('.gpf').value) || 0;
+                const nps = parseFloat(row.querySelector('.nps').value) || 0;
+                const gpf_loan = parseFloat(row.querySelector('.gpf_loan').value) || 0;
+                const kgid_loan = parseFloat(row.querySelector('.kgid_loan').value) || 0;
+                const fa = parseFloat(row.querySelector('.fa').value) || 0;
+                const local_rec = parseFloat(row.querySelector('.local_rec').value) || 0;
+
+                const totalSal = pay + da + hra + ppsfn + others;
+                const totalDed = it_tax + gis + pt + lic + kgid + gpf + kass + nps + gpf_loan + kgid_loan + fa + local_rec;
+                const netSal = totalSal - totalDed;
+
+                row.querySelector('.total_sal').value = totalSal;
+                row.querySelector('.total_ded').value = totalDed;
+                row.querySelector('.net_sal').value = netSal;
+
+                t_pay += pay; t_da += da; t_hra += hra; t_ppsfn += ppsfn; t_others += others; t_total += totalSal;
+                t_it += it_tax; t_gis += gis; t_pt += pt; t_lic += lic; t_kgid += kgid; t_gpf += gpf;
+                t_kass += kass; t_nps += nps; t_gpf_l += gpf_loan; t_kgid_l += kgid_loan; t_fa += fa;
+                t_local += local_rec; t_ded += totalDed; t_net += netSal;
+
+                sum80c += ppsfn + gis + lic + kgid + gpf;
+            });
+
+            // Set footer totals
+            document.getElementById('tot_pay').value = t_pay;
+            document.getElementById('tot_da').value = t_da;
+            document.getElementById('tot_hra').value = t_hra;
+            document.getElementById('tot_ppsfn').value = t_ppsfn;
+            document.getElementById('tot_others').value = t_others;
+            document.getElementById('tot_total').value = t_total;
+            document.getElementById('tot_it').value = t_it;
+            document.getElementById('tot_gis').value = t_gis;
+            document.getElementById('tot_pt').value = t_pt; // Correctly sums zeroed PT values
+            document.getElementById('tot_lic').value = t_lic;
+            document.getElementById('tot_kgid').value = t_kgid;
+            document.getElementById('tot_gpf').value = t_gpf;
+            document.getElementById('tot_kass').value = t_kass;
+            document.getElementById('tot_nps').value = t_nps;
+            document.getElementById('tot_gpf_loan').value = t_gpf_l;
+            document.getElementById('tot_kgid_loan').value = t_kgid_l;
+            document.getElementById('tot_fa').value = t_fa;
+            document.getElementById('tot_local').value = t_local;
+            document.getElementById('tot_ded').value = t_ded;
+            document.getElementById('tot_net').value = t_net;
+
+            renderForm16(t_total, sum80c, t_nps, t_pt, t_hra, t_it);
+        }
+
+        function calculateTaxSlabs(taxable, regime) {
+            let tax = 0;
+            if (regime === 'old') {
+                if (taxable > 250000 && taxable <= 500000) tax += (taxable - 250000) * 0.05;
+                if (taxable > 500000 && taxable <= 1000000) tax += 12500 + (taxable - 500000) * 0.20;
+                if (taxable > 1000000) tax += 112500 + (taxable - 1000000) * 0.30;
+            } else {
+                if (taxable > 300000 && taxable <= 700000) tax += (taxable - 300000) * 0.05;
+                else if (taxable > 700000 && taxable <= 1000000) tax += 20000 + (taxable - 700000) * 0.10;
+                else if (taxable > 1000000 && taxable <= 1200000) tax += 50000 + (taxable - 1000000) * 0.15;
+                else if (taxable > 1200000 && taxable <= 1500000) tax += 80000 + (taxable - 1200000) * 0.20;
+                else if (taxable > 1500000) tax += 140000 + (taxable - 1500000) * 0.30;
+            }
+            return Math.max(0, tax);
+        }
+
+        function renderForm16(grossSalary, sum80c, nps, pt, totalHra, totalItTax) {
+            const otherOld = parseFloat(document.getElementById('f16_other_old').value) || 0;
+            const otherNew = parseFloat(document.getElementById('f16_other_new').value) || 0;
+            
+            document.getElementById('f16_hra_ded').innerText = '₹ ' + totalHra;
+
+            const hpInterest = Math.min(200000, parseFloat(document.getElementById('f16_hp_interest').value) || 0);
+            
+            const disabilitySelect = document.getElementById('f16_disability_select').value;
+            const disability = (disabilitySelect === 'yes') ? 75000 : 0;
+
+            const eduLoan = parseFloat(document.getElementById('f16_edu_loan').value) || 0;
+            const donation = parseFloat(document.getElementById('f16_donation').value) || 0;
+            const healthIns = parseFloat(document.getElementById('f16_health_ins').value) || 0;
+
+            const totalGrossOld = grossSalary + otherOld;
+            const totalGrossNew = grossSalary + otherNew;
+
+            document.getElementById('f16_gross_old').innerText = '₹ ' + totalGrossOld;
+            document.getElementById('f16_gross_new').innerText = '₹ ' + totalGrossNew;
+
+            const stdDedOld = 50000;
+            const stdDedNew = 75000;
+
+            document.getElementById('f16_pt_old').innerText = '₹ ' + pt;
+
+            const chargeableOld = Math.max(0, totalGrossOld - stdDedOld - totalHra - pt - hpInterest);
+            const chargeableNew = Math.max(0, totalGrossNew - stdDedNew);
+
+            document.getElementById('f16_chargeable_old').innerText = '₹ ' + chargeableOld;
+            document.getElementById('f16_chargeable_new').innerText = '₹ ' + chargeableNew;
+
+            document.getElementById('f16_nps_old').innerText = '₹ ' + nps;
+            document.getElementById('f16_nps_new').innerText = '₹ ' + nps;
+
+            const capped80c = Math.min(150000, sum80c);
+            document.getElementById('f16_80c').innerText = '₹ ' + capped80c;
+
+            const taxableOld = Math.max(0, chargeableOld - nps - disability - eduLoan - donation - capped80c - healthIns);
+            const taxableNew = Math.max(0, chargeableNew - nps);
+
+            document.getElementById('f16_taxable_old').innerText = '₹ ' + taxableOld;
+            document.getElementById('f16_taxable_new').innerText = '₹ ' + taxableNew;
+
+            let taxOld = calculateTaxSlabs(taxableOld, 'old');
+            let taxNew = calculateTaxSlabs(taxableNew, 'new');
+
+            document.getElementById('f16_tax_old').innerText = '₹ ' + Math.round(taxOld);
+            document.getElementById('f16_tax_new').innerText = '₹ ' + Math.round(taxNew);
+
+            let rebateOld = (taxableOld <= 500000) ? Math.min(taxOld, 12500) : 0;
+            let rebateNew = (taxableNew <= 700000) ? Math.min(taxNew, 60000) : 0;
+
+            document.getElementById('f16_rebate_old').innerText = '₹ ' + rebateOld;
+            document.getElementById('f16_rebate_new').innerText = '₹ ' + rebateNew;
+
+            taxOld = Math.max(0, taxOld - rebateOld);
+            taxNew = Math.max(0, taxNew - rebateNew);
+
+            const marginalRelief = parseFloat(document.getElementById('f16_marginal_relief').value) || 0;
+            taxOld = Math.max(0, taxOld - marginalRelief);
+
+            const cessOld = Math.round(taxOld * 0.04);
+            const cessNew = Math.round(taxNew * 0.04);
+
+            document.getElementById('f16_cess_old').innerText = '₹ ' + cessOld;
+            document.getElementById('f16_cess_new').innerText = '₹ ' + cessNew;
+
+            const netTaxOld = Math.round(taxOld + cessOld);
+            const netTaxNew = Math.round(taxNew + cessNew);
+
+            document.getElementById('f16_net_tax_old').innerText = '₹ ' + netTaxOld;
+            document.getElementById('f16_net_tax_new').innerText = '₹ ' + netTaxNew;
+
+            document.getElementById('f16_adv_old').innerText = '₹ ' + totalItTax;
+            document.getElementById('f16_adv_new').innerText = '₹ ' + totalItTax;
+
+            const remOld = netTaxOld - totalItTax;
+            const remNew = netTaxNew - totalItTax;
+
+            const remOldEl = document.getElementById('f16_rem_old');
+            const remNewEl = document.getElementById('f16_rem_new');
+
+            remOldEl.innerText = '₹ ' + remOld;
+            remOldEl.className = `text-center ${remOld > 0 ? 'text-red-600' : 'text-green-600'}`;
+
+            remNewEl.innerText = '₹ ' + remNew;
+            remNewEl.className = `text-center ${remNew > 0 ? 'text-red-600' : 'text-green-600'}`;
+        }
+
+        window.onload = initTable;
+    </script>
+</body>
+</html>
